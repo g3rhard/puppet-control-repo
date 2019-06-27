@@ -11,6 +11,6 @@ mod 'nginx',
   :git    => 'https://github.com/voxpupuli/puppet-nginx'
 
 mod 'example42/hieradata',
-  :git => 'https://github.com/g3rhard/psick',
+  :git => 'https://github.com/g3rhard/psick-hieradata.git',
       :branch => :control_branch,
         :default_branch => 'production'

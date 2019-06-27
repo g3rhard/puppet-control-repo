@@ -3,5 +3,5 @@ forge "http://forge.puppetlabs.com"
 mod "puppetlabs/stdlib"
 mod "puppetlabs/ntp"
 
-mod 'apache',
-    :git    => 'https://github.com/puppetlabs/puppetlabs-apache'
+mod 'nginx',
+  :git    => 'https://github.com/voxpupuli/puppet-nginx'

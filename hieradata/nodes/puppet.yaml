@@ -3,8 +3,6 @@ classes:
   - ntp
 
 # After declare, work with it, we can transfer any var that supports to it
-ntp::restrict:
-  -
 ntp::autoupdate: false
 ntp::enable: true
 ntp::servers:

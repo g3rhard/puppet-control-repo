@@ -8,6 +8,3 @@ hierarchy:
   # - "role/%{::role}.yaml"
   # - "zone/%{::zone}.yaml"
   # - "common.yaml"
-
-backends:
-  - yaml

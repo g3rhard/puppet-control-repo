@@ -7,6 +7,6 @@ defaults:
 
 hierarchy:
   - name: Trusted Certname
-    path: "nodes/%{trusted.certname}.yaml"
+    path: "nodes/%{::hostname}.yaml"
   - name: Common
     path: "common.yaml"

@@ -9,5 +9,5 @@ Exec {
 }
 
 node default {
-  lookup('classes', {merge => unique}).include
+  include ntp
 }

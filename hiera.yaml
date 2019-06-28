@@ -1,0 +1,13 @@
+---
+version: 5
+
+hierarchy:
+  - name: Trusted Certname
+    path: "nodes/%{trusted.certname}.yaml"
+  # - "role/%{::role}-%{::env}.yaml"
+  # - "role/%{::role}.yaml"
+  # - "zone/%{::zone}.yaml"
+  # - "common.yaml"
+
+backends:
+  - yaml

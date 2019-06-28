@@ -9,5 +9,5 @@ Exec {
 }
 
 node default {
-  include ntp
+  hiera_include('classes')
 }

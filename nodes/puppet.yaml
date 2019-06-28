@@ -1,0 +1,14 @@
+---
+classes:
+  - ntp
+
+# After declare, work with it, we can transfer any var that supports to it
+ntp::restrict:
+  -
+ntp::autoupdate: false
+ntp::enable: true
+ntp::servers:
+  - 0.jp.pool.ntp.org iburst
+  - 1.jp.pool.ntp.org iburst
+  - 2.jp.pool.ntp.org iburst
+  - 3.jp.pool.ntp.org iburst

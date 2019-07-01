@@ -7,6 +7,17 @@ nginx::config::confd_purge: true
 
 # vdomain: example.com
 
+nginx::resource::server:
+  'test-proxy.local':
+    ensure: present
+    ipv6_enable: false
+    proxy: 'http://test-proxy'
+
+nginx::nginx_vhosts:
+  'test-vhosts.local':
+    ssl: true
+    proxy: 'http://test-vhosts'
+
 # nginx::nginx_vhosts:
 #   "%{hiera('vdomain')}":
 #     ensure: present

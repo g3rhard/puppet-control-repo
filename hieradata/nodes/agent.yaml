@@ -1,0 +1,19 @@
+---
+classes:
+  - nginx
+
+nginx::config::vhost_purge: true
+nginx::config::confd_purge: true
+
+vdomain: example.com
+
+nginx::nginx_locations:
+  'server-status':
+    ensure: present
+    vhost: "%{hiera('vdomain')}"
+    location: /server-status
+    stub_status: true
+    location_cfg_append:
+      access_log: off
+      allow: 127.0.0.1
+      deny: all

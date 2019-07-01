@@ -7,6 +7,16 @@ nginx::config::confd_purge: true
 
 vdomain: example.com
 
+nginx::nginx_vhosts:
+  "%{hiera('vdomain')}":
+    ensure: present
+    rewrite_www_to_non_www: true
+    www_root: "/srv/www/%{hiera('vdomain')}/"
+    try_files:
+      - '$uri'
+      - '$uri/'
+      - '/index.php$is_args$args'
+
 nginx::nginx_locations:
   'server-status':
     ensure: present

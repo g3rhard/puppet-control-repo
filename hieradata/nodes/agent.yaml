@@ -39,12 +39,11 @@ nginx::nginx_vhosts:
 #       allow: 127.0.0.1
 #       deny: all
 
----
-php::ensure: latest
+php::ensure: present
 php::manage_repos: true
 php::fpm: true
-php::fpm_user: 'nginx'
-php::fpm_group: 'nginx'
+php::fpm_user: 'www-data'
+php::fpm_group: 'www-data'
 php::dev: true
 php::composer: true
 php::pear: true
@@ -55,7 +54,7 @@ php::settings:
   'PHP/memory_limit': '64M'
   'PHP/post_max_size': '32M'
   'PHP/upload_max_filesize': '32M'
-  'Date/date.timezone': 'Europe/Berlin'
+  'Date/date.timezone': 'UTC'
 php::extensions:
   bcmath: {}
   xmlrpc: {}
@@ -72,5 +71,5 @@ php::extensions:
       'apc/stat_ctime': 1
     sapi: 'fpm'
 php::fpm::pools:
-  www2:
-    listen: '127.0.1.1:9000'
+  www:
+    listen: '127.0.0.1:9000'

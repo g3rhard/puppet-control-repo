@@ -41,7 +41,7 @@ nginx::nginx_vhosts:
 #       deny: all
 
 php::ensure: present
-php::manage_repos: true
+php::manage_repos: false
 php::fpm: true
 php::fpm_user: 'www-data'
 php::fpm_group: 'www-data'

@@ -6,7 +6,8 @@ classes:
 nginx::config::vhost_purge: true
 nginx::config::confd_purge: true
 
-vdomain: example.com
+# TODO:
+# vdomain: example.com
 
 nginx::resource::server:
   'test-proxy.local':
@@ -14,23 +15,23 @@ nginx::resource::server:
     listen_port: 8088
     www_root: '/var/www/localhost'
 
-# nginx::nginx_vhosts:
-#   "%{hiera('vdomain')}":
-#     ensure: present
-#     rewrite_www_to_non_www: true
-#     www_root: "/srv/www/%{hiera('vdomain')}/"
-#     try_files:
-#       - '$uri'
-#       - '$uri/'
-#       - '/index.php$is_args$args'
-#   'test-vhosts.local':
-#     ssl: true
-#     proxy: 'http://test-vhosts'
+nginx::nginx_vhosts:
+  "example.com":
+    ensure: present
+    rewrite_www_to_non_www: true
+    www_root: "/srv/www/example.com/"
+    try_files:
+      - '$uri'
+      - '$uri/'
+      - '/index.php$is_args$args'
+  'test-vhosts.local':
+    ssl: true
+    proxy: 'http://test-vhosts'
 
 nginx::nginx_locations:
   'server-status':
     ensure: present
-    vhost: "%{hiera('vdomain')}"
+    vhost: example.com
     location: /server-status
     stub_status: true
     location_cfg_append:

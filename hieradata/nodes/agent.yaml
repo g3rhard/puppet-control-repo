@@ -58,8 +58,7 @@ php::settings:
 php::extensions:
   bcmath: {}
   xmlrpc: {}
-  imagick:
-    provider: pecl
+  imagick: {}
   memcached:
     provider: pecl
     header_packages:

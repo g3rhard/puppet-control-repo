@@ -57,10 +57,21 @@ php::settings:
   'Date/date.timezone': 'UTC'
 php::extensions:
   bcmath: {}
+  curl: {}
+  intl: {}
+  gd: {}
+  json: {}
+  mbstring: {}
+  mysql: {}
+  pinba: {}
+  readline: {}
+  xdebug: {}
+  xml: {}
   xmlrpc: {}
-  imagick: {}
-  memcached: {}
-  apc:
+  zip: {}
+  # imagick: {}
+  # memcached: {}
+  apcu:
     settings:
       'apc/stat': 1
       'apc/stat_ctime': 1

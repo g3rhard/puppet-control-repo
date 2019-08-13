@@ -2,98 +2,98 @@
 classes:
   - nginx
   - php
-  - test_nginx
+  # - test_nginx
 
-# nginx::config::vhost_purge: true
-# nginx::config::confd_purge: true
+nginx::config::vhost_purge: true
+nginx::config::confd_purge: true
 
 # TODO:
 # vdomain: example.com
 
-# nginx::resource::server:
-#   'test-proxy.local':
-#     ensure: present
-#     listen_port: 8088
-#     www_root: '/var/www/localhost'
-#   'kibana.local':
-#     listen_port: 80,
-#     proxy: 'http://localhost:5601'
+nginx::resource::server:
+  'test-proxy.local':
+    ensure: present
+    listen_port: 8088
+    www_root: '/var/www/localhost'
+  'kibana.local':
+    listen_port: 80,
+    proxy: 'http://localhost:5601'
 
-# nginx::nginx_servers:
-#     'devops-alldomains':
-#         server_name:
-#             - '~^(?<fqdn>.+?)$'
-#         www_root: '/var/www/$fqdn'
-#         index_files:
-#             - 'index.php'
-#         try_files:
-#             - '$uri'
-#             - '$uri/'
-#             - '/index.php?$args'
-#         access_log: '/var/log/nginx/devops-alldomains-access.log'
-#         error_log: '/var/log/nginx/devops-alldomains-error.log'
-#     'devops-alldomains-ssl':
-#         server_name:
-#             - '~^(?<fqdn>.+?)$'
-#         listen_port: '443'
-#         ssl_port: '443'
-#         www_root: '/var/www/$fqdn'
-#         ssl: true
-#         ssl_key: '/etc/ssl/www/$fqdn.key'
-#         ssl_cert: '/etc/ssl/www/$fqdn.crt'
-#         index_files:
-#             - 'index.php'
-#         try_files:
-#             - '$uri'
-#             - '$uri/'
-#             - '/index.php?$args'
-#         access_log: '/var/log/nginx/devops-alldomains-access-ssl.log'
-#         error_log: '/var/log/nginx/devops-alldomains-error-ssl.log'
-# nginx::nginx_locations:
-#     'devops-alldomains-loc':
-#         location: '~ \.php$'
-#         www_root: '/var/www/$fqdn'
-#         server: 'devops-alldomains'
-#         fastcgi: 'unix:/var/run/php7-fpm.sock'
-#         fastcgi_split_path: '^(.+\.php)(/.*)$'
-#         fastcgi_index: 'index.php'
-#         fastcgi_param:
-#             'SCRIPT_FILENAME': '$document_root$fastcgi_script_name'
-#     'devops-alldomains-ssl-loc':
-#         location: '~ \.php$'
-#         www_root: '/var/www/$fqdn'
-#         server: 'devops-alldomains-ssl'
-#         ssl: true
-#         ssl_only: true
-#         fastcgi: 'unix:/var/run/php7-fpm.sock'
-#         fastcgi_split_path: '^(.+\.php)(/.*)$'
-#         fastcgi_index: 'index.php'
-#         fastcgi_param:
-#             'SCRIPT_FILENAME': '$document_root$fastcgi_script_name'
+nginx::nginx_servers:
+    'devops-alldomains':
+        server_name:
+            - '~^(?<fqdn>.+?)$'
+        www_root: '/var/www/$fqdn'
+        index_files:
+            - 'index.php'
+        try_files:
+            - '$uri'
+            - '$uri/'
+            - '/index.php?$args'
+        access_log: '/var/log/nginx/devops-alldomains-access.log'
+        error_log: '/var/log/nginx/devops-alldomains-error.log'
+    'devops-alldomains-ssl':
+        server_name:
+            - '~^(?<fqdn>.+?)$'
+        listen_port: '443'
+        ssl_port: '443'
+        www_root: '/var/www/$fqdn'
+        ssl: true
+        ssl_key: '/etc/ssl/www/$fqdn.key'
+        ssl_cert: '/etc/ssl/www/$fqdn.crt'
+        index_files:
+            - 'index.php'
+        try_files:
+            - '$uri'
+            - '$uri/'
+            - '/index.php?$args'
+        access_log: '/var/log/nginx/devops-alldomains-access-ssl.log'
+        error_log: '/var/log/nginx/devops-alldomains-error-ssl.log'
+nginx::nginx_locations:
+    'devops-alldomains-loc':
+        location: '~ \.php$'
+        www_root: '/var/www/$fqdn'
+        server: 'devops-alldomains'
+        fastcgi: 'unix:/var/run/php7-fpm.sock'
+        fastcgi_split_path: '^(.+\.php)(/.*)$'
+        fastcgi_index: 'index.php'
+        fastcgi_param:
+            'SCRIPT_FILENAME': '$document_root$fastcgi_script_name'
+    'devops-alldomains-ssl-loc':
+        location: '~ \.php$'
+        www_root: '/var/www/$fqdn'
+        server: 'devops-alldomains-ssl'
+        ssl: true
+        ssl_only: true
+        fastcgi: 'unix:/var/run/php7-fpm.sock'
+        fastcgi_split_path: '^(.+\.php)(/.*)$'
+        fastcgi_index: 'index.php'
+        fastcgi_param:
+            'SCRIPT_FILENAME': '$document_root$fastcgi_script_name'
 
-# nginx::nginx_vhosts:
-#   "example.com":
-#     ensure: present
-#     rewrite_www_to_non_www: true
-#     www_root: "/srv/www/example.com/"
-#     try_files:
-#       - '$uri'
-#       - '$uri/'
-#       - '/index.php$is_args$args'
-#   'test-vhosts.local':
-#     ssl: true
-#     proxy: 'http://test-vhosts'
+nginx::nginx_vhosts:
+  "example.com":
+    ensure: present
+    rewrite_www_to_non_www: true
+    www_root: "/srv/www/example.com/"
+    try_files:
+      - '$uri'
+      - '$uri/'
+      - '/index.php$is_args$args'
+  'test-vhosts.local':
+    ssl: true
+    proxy: 'http://test-vhosts'
 
-# nginx::nginx_locations:
-#   'server-status':
-#     ensure: present
-#     # vhost: example.com
-#     location: /server-status
-#     stub_status: true
-#     location_cfg_append:
-#       access_log: off
-#       allow: 127.0.0.1
-#       deny: all
+nginx::nginx_locations:
+  'server-status':
+    ensure: present
+    # vhost: example.com
+    location: /server-status
+    stub_status: true
+    location_cfg_append:
+      access_log: off
+      allow: 127.0.0.1
+      deny: all
 
 php::ensure: present
 php::manage_repos: false

@@ -35,8 +35,8 @@ nginx::nginx_servers:
     'devops-alldomains-ssl':
         server_name:
             - '~^(?<fqdn>.+?)$'
-        listen_port: '443'
-        ssl_port: '443'
+        listen_port: 443
+        ssl_port: 443
         www_root: '/var/www/$fqdn'
         ssl: true
         ssl_key: '/etc/ssl/www/$fqdn.key'

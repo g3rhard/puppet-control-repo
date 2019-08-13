@@ -55,7 +55,7 @@ nginx::nginx_locations:
         location: '~ \.php$'
         www_root: '/var/www/$fqdn'
         server: 'devops-alldomains'
-        fastcgi: 'http://127.0.0.1:9000'
+        fastcgi: '127.0.0.1:9000'
         fastcgi_split_path: '^(.+\.php)(/.*)$'
         fastcgi_index: 'index.php'
         fastcgi_param:

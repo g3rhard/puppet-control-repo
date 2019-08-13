@@ -18,6 +18,57 @@ nginx::resource::server:
     listen_port: 80,
     proxy: 'http://localhost:5601'
 
+nginx::nginx_servers:
+    'devops-alldomains':
+        server_name:
+            - '~^(?<fqdn>.+?)$'
+        www_root: '/var/www/$fqdn'
+        index_files:
+            - 'index.php'
+        try_files:
+            - '$uri'
+            - '$uri/'
+            - '/index.php?$args'
+        access_log: '/var/log/nginx/devops-alldomains-access.log'
+        error_log: '/var/log/nginx/devops-alldomains-error.log'
+    'devops-alldomains-ssl':
+        server_name:
+            - '~^(?<fqdn>.+?)$'
+        listen_port: '443'
+        ssl_port: '443'
+        www_root: '/var/www/$fqdn'
+        ssl: true
+        ssl_key: '/etc/ssl/www/$fqdn.key'
+        ssl_cert: '/etc/ssl/www/$fqdn.crt'
+        index_files:
+            - 'index.php'
+        try_files:
+            - '$uri'
+            - '$uri/'
+            - '/index.php?$args'
+        access_log: '/var/log/nginx/devops-alldomains-access-ssl.log'
+        error_log: '/var/log/nginx/devops-alldomains-error-ssl.log'
+nginx::nginx_locations:
+    'devops-alldomains-loc':
+        location: '~ \.php$'
+        www_root: '/var/www/$fqdn'
+        server: 'devops-alldomains'
+        fastcgi: 'unix:/var/run/php7-fpm.sock'
+        fastcgi_split_path: '^(.+\.php)(/.*)$'
+        fastcgi_index: 'index.php'
+        fastcgi_param:
+            'SCRIPT_FILENAME': '$document_root$fastcgi_script_name'
+    'devops-alldomains-ssl-loc':
+        location: '~ \.php$'
+        www_root: '/var/www/$fqdn'
+        server: 'devops-alldomains-ssl'
+        ssl: true
+        ssl_only: true
+        fastcgi: 'unix:/var/run/php7-fpm.sock'
+        fastcgi_split_path: '^(.+\.php)(/.*)$'
+        fastcgi_index: 'index.php'
+        fastcgi_param:
+            'SCRIPT_FILENAME': '$document_root$fastcgi_script_name'
 
 nginx::nginx_vhosts:
   "example.com":

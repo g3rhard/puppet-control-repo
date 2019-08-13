@@ -2,6 +2,7 @@
 classes:
   - nginx
   - php
+  - test_nginx
 
 # nginx::config::vhost_purge: true
 # nginx::config::confd_purge: true
@@ -9,14 +10,14 @@ classes:
 # TODO:
 # vdomain: example.com
 
-nginx::resource::server:
-  'test-proxy.local':
-    ensure: present
-    listen_port: 8088
-    www_root: '/var/www/localhost'
-  'kibana.local':
-    listen_port: 80,
-    proxy: 'http://localhost:5601'
+# nginx::resource::server:
+#   'test-proxy.local':
+#     ensure: present
+#     listen_port: 8088
+#     www_root: '/var/www/localhost'
+#   'kibana.local':
+#     listen_port: 80,
+#     proxy: 'http://localhost:5601'
 
 # nginx::nginx_servers:
 #     'devops-alldomains':
@@ -70,29 +71,29 @@ nginx::resource::server:
 #         fastcgi_param:
 #             'SCRIPT_FILENAME': '$document_root$fastcgi_script_name'
 
-nginx::nginx_vhosts:
-  "example.com":
-    ensure: present
-    rewrite_www_to_non_www: true
-    www_root: "/srv/www/example.com/"
-    try_files:
-      - '$uri'
-      - '$uri/'
-      - '/index.php$is_args$args'
-  'test-vhosts.local':
-    ssl: true
-    proxy: 'http://test-vhosts'
+# nginx::nginx_vhosts:
+#   "example.com":
+#     ensure: present
+#     rewrite_www_to_non_www: true
+#     www_root: "/srv/www/example.com/"
+#     try_files:
+#       - '$uri'
+#       - '$uri/'
+#       - '/index.php$is_args$args'
+#   'test-vhosts.local':
+#     ssl: true
+#     proxy: 'http://test-vhosts'
 
-nginx::nginx_locations:
-  'server-status':
-    ensure: present
-    # vhost: example.com
-    location: /server-status
-    stub_status: true
-    location_cfg_append:
-      access_log: off
-      allow: 127.0.0.1
-      deny: all
+# nginx::nginx_locations:
+#   'server-status':
+#     ensure: present
+#     # vhost: example.com
+#     location: /server-status
+#     stub_status: true
+#     location_cfg_append:
+#       access_log: off
+#       allow: 127.0.0.1
+#       deny: all
 
 php::ensure: present
 php::manage_repos: false

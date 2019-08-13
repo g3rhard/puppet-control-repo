@@ -84,16 +84,16 @@ nginx::nginx_vhosts:
     ssl: true
     proxy: 'http://test-vhosts'
 
-nginx::nginx_locations:
-  'server-status':
-    ensure: present
-    # vhost: example.com
-    location: /server-status
-    stub_status: true
-    location_cfg_append:
-      access_log: off
-      allow: 127.0.0.1
-      deny: all
+# nginx::nginx_locations:
+#   'server-status':
+#     ensure: present
+#     # vhost: example.com
+#     location: /server-status
+#     stub_status: true
+#     location_cfg_append:
+#       access_log: off
+#       allow: 127.0.0.1
+#       deny: all
 
 php::ensure: present
 php::manage_repos: false

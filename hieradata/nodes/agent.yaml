@@ -10,20 +10,11 @@ nginx::config::confd_purge: true
 # TODO:
 # vdomain: example.com
 
-nginx::resource::server:
-  'test-proxy.local':
-    ensure: present
-    listen_port: 8088
-    www_root: '/var/www/localhost'
-  'kibana.local':
-    listen_port: 80,
-    proxy: 'http://localhost:5601'
-
 nginx::nginx_servers:
-    'devops-alldomains':
+    'zabbix-http':
         server_name:
-            - '~^(?<fqdn>.+?)$'
-        www_root: '/var/www/$fqdn'
+            - 'zabbix.local'
+        www_root: '/var/www/zabbix.local'
         index_files:
             - 'index.php'
         try_files:
@@ -32,15 +23,15 @@ nginx::nginx_servers:
             - '/index.php?$args'
         access_log: '/var/log/nginx/devops-alldomains-access.log'
         error_log: '/var/log/nginx/devops-alldomains-error.log'
-    'devops-alldomains-ssl':
+    'zabbix-https':
         server_name:
-            - '~^(?<fqdn>.+?)$'
+            - 'zabbix.local'
         listen_port: 443
         ssl_port: 443
-        www_root: '/var/www/$fqdn'
+        www_root: '/var/www/zabbix.local'
         ssl: true
-        ssl_key: '/etc/ssl/www/$fqdn.key'
-        ssl_cert: '/etc/ssl/www/$fqdn.crt'
+        ssl_key: '/etc/ssl/www/zabbix.local.key'
+        ssl_cert: '/etc/ssl/www/zabbix.local.crt'
         index_files:
             - 'index.php'
         try_files:
@@ -51,22 +42,22 @@ nginx::nginx_servers:
         error_log: '/var/log/nginx/devops-alldomains-error-ssl.log'
 
 nginx::nginx_locations:
-    'devops-alldomains-loc':
+    'zabbix-http-loc':
         location: '~ \.php$'
         www_root: '/var/www/$fqdn'
-        server: 'devops-alldomains'
+        server: 'zabbix-http'
         fastcgi: '127.0.0.1:9000'
         fastcgi_split_path: '^(.+\.php)(/.*)$'
         fastcgi_index: 'index.php'
         fastcgi_param:
             'SCRIPT_FILENAME': '$document_root$fastcgi_script_name'
-    'devops-alldomains-ssl-loc':
+    'zabbix-https-loc':
         location: '~ \.php$'
         www_root: '/var/www/$fqdn'
-        server: 'devops-alldomains-ssl'
+        server: 'zabbix-https'
         ssl: true
         ssl_only: true
-        fastcgi: 'unix:/var/run/php7-fpm.sock'
+        fastcgi: '127.0.0.1:9000'
         fastcgi_split_path: '^(.+\.php)(/.*)$'
         fastcgi_index: 'index.php'
         fastcgi_param:
@@ -95,10 +86,10 @@ php::extensions:
   gd: {}
   json: {}
   mbstring: {}
-  mysql: {}
+  mysqli: {}
   pinba: {}
   readline: {}
-  xdebug: {}
+  # xdebug: {}
   xml: {}
   xmlrpc: {}
   zip: {}
@@ -106,8 +97,14 @@ php::extensions:
   # memcached: {}
   apcu:
     settings:
-      'apc/stat': 1
+      'apc/enable_cli': 1
+      'apc/entries_hint': 0
+      'apc/gc_ttl': 3600
+      'apc/shm_segments': 1
+      'apc/shm_size': '64M'
       'apc/stat_ctime': 1
+      'apc/stat': 1
+      'apc/ttl': 3600
     sapi: 'fpm'
 php::fpm::pools:
   www:

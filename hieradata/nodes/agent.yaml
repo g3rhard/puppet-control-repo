@@ -95,7 +95,7 @@ php::extensions:
   zip: {}
   # imagick: {}
   memcached:
-    ini_prefix: '30-'
+    settings_prefix: '30-'
   apcu:
     settings:
       'apc/enable_cli': 1

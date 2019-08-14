@@ -48,15 +48,15 @@ nginx::nginx_locations:
         fastcgi: '127.0.0.1:9000'
         fastcgi_split_path: '^(.+\.php)(/.*)$'
         fastcgi_index: 'index.php'
-        fastcgi_buffers: '4 256k'
-        fastcgi_busy_buffers_size: '256k'
-        fastcgi_temp_file_write_size: '256k'
+        # fastcgi_buffers: '4 256k'
+        # fastcgi_busy_buffers_size: '256k'
+        # fastcgi_temp_file_write_size: '256k'
         try_files:
           - '$uri =404'
-        index_files: {}
         fastcgi_param:
             'SCRIPT_FILENAME': '$document_root$fastcgi_script_name'
-        include: 'fastcgi_params'
+        include:
+          - 'fastcgi_params'
     'htaccess':
         location: '~ /\.ht'
         location_deny:

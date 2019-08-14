@@ -88,6 +88,7 @@ php::extensions:
   json: {}
   mbstring: {}
   mysqli:
+    provider: 'apt'
     package_name: 'php7.0-mysql'
   pinba:
     provider: 'apt'

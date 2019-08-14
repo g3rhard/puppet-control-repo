@@ -1,0 +1,121 @@
+---
+classes:
+  - nginx
+  - php
+  # - test_nginx
+
+nginx::manage_repo: false
+nginx::config::vhost_purge: true
+nginx::config::confd_purge: true
+
+# TODO:
+# vdomain: example.com
+
+nginx::nginx_servers:
+    'zabbix-http':
+        server_name:
+            - 'zabbix.local'
+        www_root: '/var/www/zabbix.local'
+        index_files:
+            - 'index.php'
+        try_files:
+            - '$uri'
+            - '$uri/'
+            - '/index.php?$args'
+        access_log: '/var/log/nginx/devops-alldomains-access.log'
+        error_log: '/var/log/nginx/devops-alldomains-error.log'
+    'zabbix-https':
+        server_name:
+            - 'zabbix.local'
+        listen_port: 443
+        ssl_port: 443
+        www_root: '/var/www/zabbix.local'
+        ssl: true
+        ssl_key: '/etc/ssl/www/zabbix.local.key'
+        ssl_cert: '/etc/ssl/www/zabbix.local.crt'
+        index_files:
+            - 'index.php'
+        try_files:
+            - '$uri'
+            - '$uri/'
+            - '/index.php?$args'
+        access_log: '/var/log/nginx/devops-alldomains-access-ssl.log'
+        error_log: '/var/log/nginx/devops-alldomains-error-ssl.log'
+
+nginx::nginx_locations:
+    'zabbix-http-loc':
+        location: '~ \.php$'
+        www_root: '/var/www/$fqdn'
+        server: 'zabbix-http'
+        fastcgi: '127.0.0.1:9000'
+        fastcgi_split_path: '^(.+\.php)(/.*)$'
+        fastcgi_index: 'index.php'
+        fastcgi_param:
+            'SCRIPT_FILENAME': '$document_root$fastcgi_script_name'
+    'zabbix-https-loc':
+        location: '~ \.php$'
+        www_root: '/var/www/$fqdn'
+        server: 'zabbix-https'
+        ssl: true
+        ssl_only: true
+        fastcgi: '127.0.0.1:9000'
+        fastcgi_split_path: '^(.+\.php)(/.*)$'
+        fastcgi_index: 'index.php'
+        fastcgi_param:
+            'SCRIPT_FILENAME': '$document_root$fastcgi_script_name'
+
+php::ensure: present
+php::manage_repos: false
+php::fpm: true
+php::fpm_user: 'www-data'
+php::fpm_group: 'www-data'
+php::dev: true
+php::composer: true
+php::pear: true
+php::phpunit: false
+php::settings:
+  'PHP/max_execution_time': '90'
+  'PHP/max_input_time': '300'
+  'PHP/memory_limit': '64M'
+  'PHP/post_max_size': '32M'
+  'PHP/upload_max_filesize': '32M'
+  'Date/date.timezone': 'UTC'
+php::extensions:
+  bcmath: {}
+  curl: {}
+  intl: {}
+  gd: {}
+  json: {}
+  mbstring: {}
+  mysql:
+    settings:
+      'extension': 'mysqli.so'
+  pinba:
+    provider: 'apt'
+    package_prefix: 'php-'
+  readline: {}
+  # xdebug: {}
+  xml: {}
+  xmlrpc: {}
+  zip: {}
+  # imagick: {}
+  memcached:
+    provider: 'apt'
+    package_prefix: 'php-'
+    settings_prefix: '30-'
+  apcu:
+    provider: 'apt'
+    package_prefix: 'php-'
+    settings:
+      'apc/enable_cli': 1
+      'apc/entries_hint': 0
+      'apc/gc_ttl': 3600
+      'apc/shm_segments': 1
+      'apc/shm_size': '64M'
+      'apc/stat_ctime': 1
+      'apc/stat': 1
+      'apc/ttl': 3600
+    sapi: 'fpm'
+php::fpm::pools:
+  www:
+    listen: '127.0.0.1:9000'

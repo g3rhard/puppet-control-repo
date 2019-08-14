@@ -87,7 +87,7 @@ php::extensions:
   gd: {}
   json: {}
   mbstring: {}
-  mysqli:
+  mysql:
     settings:
       'so_name': 'mysqli'
   pinba:

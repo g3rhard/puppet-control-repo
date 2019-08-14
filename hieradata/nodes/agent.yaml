@@ -4,6 +4,7 @@ classes:
   - php
   # - test_nginx
 
+nginx::manage_repos: false
 nginx::config::vhost_purge: true
 nginx::config::confd_purge: true
 
@@ -97,6 +98,8 @@ php::extensions:
   memcached:
     settings_prefix: '30-'
   apcu:
+    provider: 'apt'
+    package_prefix: 'php-'
     settings:
       'apc/enable_cli': 1
       'apc/entries_hint': 0

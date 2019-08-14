@@ -14,47 +14,32 @@ nginx::config::confd_purge: true
 nginx::nginx_servers:
     'zabbix-http':
         server_name:
-            - 'zabbix.local'
-        www_root: '/var/www/zabbix.local'
-        index_files:
-            - 'index.php'
-        try_files:
-            - '$uri'
-            - '$uri/'
-            - '/index.php?$args'
-        access_log: '/var/log/nginx/devops-alldomains-access.log'
-        error_log: '/var/log/nginx/devops-alldomains-error.log'
+          - 'zabbix.local'
+        listen_port: 80
     'zabbix-https':
         server_name:
-            - 'zabbix.local'
+          - 'zabbix.local'
         listen_port: 443
         ssl_port: 443
-        www_root: '/var/www/zabbix.local'
+        www_root: '/usr/share/zabbix'
         ssl: true
         ssl_key: '/etc/ssl/www/zabbix.local.key'
         ssl_cert: '/etc/ssl/www/zabbix.local.crt'
         index_files:
-            - 'index.php'
+          - 'index.php'
+          - 'index.html'
+          - 'index.htm'
         try_files:
-            - '$uri'
-            - '$uri/'
-            - '/index.php?$args'
-        access_log: '/var/log/nginx/devops-alldomains-access-ssl.log'
-        error_log: '/var/log/nginx/devops-alldomains-error-ssl.log'
+          - '$uri'
+          - '$uri/'
+          - '/index.php?$args'
+        access_log: '/var/log/nginx/zabbix.local.access.log'
+        error_log: '/var/log/nginx/zabbix.local.error.log'
 
 nginx::nginx_locations:
-    'zabbix-http-loc':
-        location: '~ \.php$'
-        www_root: '/var/www/$fqdn'
-        server: 'zabbix-http'
-        fastcgi: '127.0.0.1:9000'
-        fastcgi_split_path: '^(.+\.php)(/.*)$'
-        fastcgi_index: 'index.php'
-        fastcgi_param:
-            'SCRIPT_FILENAME': '$document_root$fastcgi_script_name'
     'zabbix-https-loc':
         location: '~ \.php$'
-        www_root: '/var/www/$fqdn'
+        www_root: '/usr/share/zabbix'
         server: 'zabbix-https'
         ssl: true
         ssl_only: true
@@ -63,6 +48,11 @@ nginx::nginx_locations:
         fastcgi_index: 'index.php'
         fastcgi_param:
             'SCRIPT_FILENAME': '$document_root$fastcgi_script_name'
+    'htaccess':
+        location: '~ /\.ht'
+        location_deny:
+          - 'all'
+        server: 'zabbix-https'
 
 php::ensure: present
 php::manage_repos: false

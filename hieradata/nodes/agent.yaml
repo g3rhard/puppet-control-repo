@@ -94,7 +94,8 @@ php::extensions:
   xmlrpc: {}
   zip: {}
   # imagick: {}
-  # memcached: {}
+  memcached:
+    ini_prefix: '30-'
   apcu:
     settings:
       'apc/enable_cli': 1

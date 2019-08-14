@@ -4,7 +4,7 @@ classes:
   - php
   # - test_nginx
 
-nginx::manage_repos: false
+nginx::manage_repo: false
 nginx::config::vhost_purge: true
 nginx::config::confd_purge: true
 

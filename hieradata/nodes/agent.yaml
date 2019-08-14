@@ -62,7 +62,6 @@ nginx::nginx_locations:
         location_deny:
           - 'all'
         server: 'zabbix-https'
-        index_files: {}
 
 php::ensure: present
 php::manage_repos: false

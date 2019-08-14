@@ -89,7 +89,7 @@ php::extensions:
   mbstring: {}
   mysql:
     settings:
-      'so_name': 'mysqli'
+      'extension': 'mysqli.so'
   pinba:
     provider: 'apt'
     package_prefix: 'php-'

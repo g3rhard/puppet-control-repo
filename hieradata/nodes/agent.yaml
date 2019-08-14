@@ -87,8 +87,10 @@ php::extensions:
   gd: {}
   json: {}
   mbstring: {}
-  mysqli: {}
-  pinba: {}
+  mysql: {}
+  pinba:
+    provider: 'apt'
+    package_prefix: 'php-'
   readline: {}
   # xdebug: {}
   xml: {}
@@ -96,6 +98,8 @@ php::extensions:
   zip: {}
   # imagick: {}
   memcached:
+    provider: 'apt'
+    package_prefix: 'php-'
     settings_prefix: '30-'
   apcu:
     provider: 'apt'

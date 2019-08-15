@@ -37,6 +37,10 @@ nginx::nginx_servers:
         auth_basic_user_file: '/var/data/passwds/zabbix.local'
         access_log: '/var/log/nginx/zabbix.local.access.log'
         error_log: '/var/log/nginx/zabbix.local.error.log'
+        location_cfg_append:
+          access_log: off
+          allow: 127.0.0.1
+          deny: all
 
 nginx::nginx_locations:
     'zabbix-https-loc':

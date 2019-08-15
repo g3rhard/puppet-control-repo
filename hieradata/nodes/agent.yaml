@@ -33,8 +33,6 @@ nginx::nginx_servers:
           - '$uri'
           - '$uri/'
           - '/index.php?$args'
-        auth_basic: 'Restricted'
-        auth_basic_user_file: '/var/data/passwds/zabbix.local'
         access_log: '/var/log/nginx/zabbix.local.access.log'
         error_log: '/var/log/nginx/zabbix.local.error.log'
         location_cfg_append:
@@ -43,6 +41,8 @@ nginx::nginx_servers:
           include:
             - '/etc/nginx/conf.d/allow_from_ips.conf'
           deny: all
+          auth_basic: 'Restricted'
+          auth_basic_user_file: '/var/data/passwds/zabbix.local'
 
 nginx::nginx_locations:
     'zabbix-https-loc':
@@ -52,7 +52,7 @@ nginx::nginx_locations:
         ssl: true
         ssl_only: true
         fastcgi: '127.0.0.1:9000'
-        fastcgi_split_path: '^(.+\.php)(/.*)$'
+        # fastcgi_split_path: '^(.+\.php)(/.*)$'
         fastcgi_index: 'index.php'
         location_cfg_append:
           fastcgi_buffers: '4 256k'
@@ -66,9 +66,9 @@ nginx::nginx_locations:
           - 'fastcgi_params'
     'htaccess':
         location: '~ /\.ht'
+        server: 'zabbix-https'
         location_deny:
           - 'all'
-        server: 'zabbix-https'
 
 php::ensure: present
 php::manage_repos: false

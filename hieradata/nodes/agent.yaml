@@ -39,7 +39,9 @@ nginx::nginx_servers:
         error_log: '/var/log/nginx/zabbix.local.error.log'
         location_cfg_append:
           access_log: off
-          allow: 127.0.0.1
+          satisfy: any
+          include:
+            - '/etc/nginx/conf.d/allow_from_ips.conf'
           deny: all
 
 nginx::nginx_locations:

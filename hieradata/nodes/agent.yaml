@@ -64,7 +64,7 @@ nginx::nginx_locations:
           'SCRIPT_FILENAME': '$document_root$fastcgi_script_name'
       include:
         - 'fastcgi_params'
-    htaccess:
+    zabbix-https-htaccess:
       location: '~ /\.ht'
       server: 'zabbix-https'
       location_deny:

@@ -104,7 +104,6 @@ nginx::nginx_servers:
     locations:
       '~ \.php$':
         location: '~ \.php$'
-        return: 404
       'pinboard-site':
         location: '@site'
         ssl: true

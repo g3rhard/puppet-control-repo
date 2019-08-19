@@ -112,7 +112,6 @@ nginx::nginx_servers:
         return: 404
       'pinboard-site':
         location: '@site'
-        server: 'pinboard-https'
         ssl: true
         ssl_only: true
         fastcgi: '127.0.0.1:9000'
@@ -123,7 +122,6 @@ nginx::nginx_servers:
           - 'fastcgi_params'
       'pinboard-https-htaccess':
         location: '~ /\.(ht|svn|git)'
-        server: 'zabbix-https'
         location_deny:
           - 'all'
 

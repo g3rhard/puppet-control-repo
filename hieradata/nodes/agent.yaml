@@ -12,63 +12,63 @@ nginx::config::confd_purge: true
 # vdomain: example.com
 
 nginx::nginx_servers:
-    'zabbix-http':
+    zabbix-http:
         server_name:
           - 'zabbix.local'
         listen_port: 80
-    'zabbix-https':
-        server_name:
-          - 'zabbix.local'
-        listen_port: 443
-        ssl_port: 443
-        www_root: '/usr/share/zabbix'
-        ssl: true
-        ssl_key: '/etc/ssl/www/zabbix.local.key'
-        ssl_cert: '/etc/ssl/www/zabbix.local.crt'
-        index_files:
-          - 'index.php'
-          - 'index.html'
-          - 'index.htm'
-        try_files:
-          - '$uri'
-          - '$uri/'
-          - '/index.php?$args'
-        access_log: '/var/log/nginx/zabbix.local.access.log'
-        error_log: '/var/log/nginx/zabbix.local.error.log'
-        location_cfg_append:
-          access_log: off
-          satisfy: any
-          include:
-            - '/etc/nginx/conf.d/allow_from_ips.conf'
-          deny: all
-          auth_basic: 'Restricted'
-          auth_basic_user_file: '/var/data/passwds/zabbix.local'
+    zabbix-https:
+      server_name:
+        - 'zabbix.local'
+      listen_port: 443
+      ssl_port: 443
+      www_root: '/usr/share/zabbix'
+      ssl: true
+      ssl_key: '/etc/ssl/www/zabbix.local.key'
+      ssl_cert: '/etc/ssl/www/zabbix.local.crt'
+      index_files:
+        - 'index.php'
+        - 'index.html'
+        - 'index.htm'
+      try_files:
+        - '$uri'
+        - '$uri/'
+        - '/index.php?$args'
+      access_log: '/var/log/nginx/zabbix.local.access.log'
+      error_log: '/var/log/nginx/zabbix.local.error.log'
+      location_cfg_append:
+        access_log: off
+        satisfy: any
+        include:
+          - '/etc/nginx/conf.d/allow_from_ips.conf'
+        deny: all
+        auth_basic: 'Restricted'
+        auth_basic_user_file: '/var/data/passwds/zabbix.local'
 
 nginx::nginx_locations:
-    'zabbix-https-loc':
-        location: '~ \.php$'
-        www_root: '/usr/share/zabbix'
-        server: 'zabbix-https'
-        ssl: true
-        ssl_only: true
-        fastcgi: '127.0.0.1:9000'
-        # fastcgi_split_path: '^(.+\.php)(/.*)$'
-        fastcgi_index: 'index.php'
-        location_cfg_append:
-          fastcgi_buffers: '4 256k'
-          fastcgi_busy_buffers_size: '256k'
-          fastcgi_temp_file_write_size: '256k'
-        try_files:
-          - '$uri =404'
-        fastcgi_param:
-            'SCRIPT_FILENAME': '$document_root$fastcgi_script_name'
-        include:
-          - 'fastcgi_params'
-    'htaccess':
-        location: '~ /\.ht'
-        server: 'zabbix-https'
-        location_deny:
-          - 'all'
+    zabbix-https-loc:
+      location: '~ \.php$'
+      www_root: '/usr/share/zabbix'
+      server: 'zabbix-https'
+      ssl: true
+      ssl_only: true
+      fastcgi: '127.0.0.1:9000'
+      # fastcgi_split_path: '^(.+\.php)(/.*)$'
+      fastcgi_index: 'index.php'
+      location_cfg_append:
+        fastcgi_buffers: '4 256k'
+        fastcgi_busy_buffers_size: '256k'
+        fastcgi_temp_file_write_size: '256k'
+      try_files:
+        - '$uri =404'
+      fastcgi_param:
+          'SCRIPT_FILENAME': '$document_root$fastcgi_script_name'
+      include:
+        - 'fastcgi_params'
+    htaccess:
+      location: '~ /\.ht'
+      server: 'zabbix-https'
+      location_deny:
+        - 'all'
 
 php::ensure: present
 php::manage_repos: false

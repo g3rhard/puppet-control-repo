@@ -90,7 +90,7 @@ nginx::nginx_servers:
     try_files:
       - '$uri'
       - '$uri/'
-      - '/index.php?$args'
+      - '@site'
     access_log: '/var/log/nginx/pinboard.local.access.log'
     error_log: '/var/log/nginx/pinboard.local.error.log'
     location_cfg_append:
@@ -101,6 +101,7 @@ nginx::nginx_servers:
       deny: all
       auth_basic: 'Restricted'
       auth_basic_user_file: '/var/data/passwds/zabbix.local'
+    use_default_location: false
     locations:
       '~ \.php$':
         location: '~ \.php$'

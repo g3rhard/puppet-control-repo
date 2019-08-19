@@ -16,6 +16,7 @@ nginx::nginx_servers:
     server_name:
       - 'zabbix.local'
     listen_port: 80
+    ssl_redirect: true
   'zabbix-https':
     server_name:
       - 'zabbix.local'
@@ -65,6 +66,63 @@ nginx::nginx_servers:
           - 'fastcgi_params'
       'zabbix-https-htaccess':
         location: '~ /\.ht'
+        server: 'zabbix-https'
+        location_deny:
+          - 'all'
+  'pinboard-http':
+    server_name:
+      - 'pinboard.local'
+    listen_port: 80
+    ssl_redirect: true
+  'pinboard-https':
+    server_name:
+      - 'pinboard.local'
+    listen_port: 443
+    ssl_port: 443
+    www_root: '/var/www/pinboard/web'
+    ssl: true
+    ssl_key: '/etc/ssl/www/pinboard.local.key'
+    ssl_cert: '/etc/ssl/www/pinboard.local.crt'
+    index_files:
+      - 'index.php'
+      - 'index.html'
+      - 'index.htm'
+    try_files:
+      - '$uri'
+      - '$uri/'
+      - '/index.php?$args'
+    access_log: '/var/log/nginx/pinboard.local.access.log'
+    error_log: '/var/log/nginx/pinboard.local.error.log'
+    location_cfg_append:
+      access_log: off
+      satisfy: any
+      include:
+        - '/etc/nginx/conf.d/allow_from_ips.conf'
+      deny: all
+      auth_basic: 'Restricted'
+      auth_basic_user_file: '/var/data/passwds/zabbix.local'
+    locations:
+      '/':
+        location: '/'
+        try_files:
+          - '@site @site'
+          - '$uri $uri/'
+      '~ \.php$':
+        location: '~ \.php$'
+        return: 404
+      'pinboard-site':
+        location: '@site'
+        server: 'pinboard-https'
+        ssl: true
+        ssl_only: true
+        fastcgi: '127.0.0.1:9000'
+        # fastcgi_split_path: '^(.+\.php)(/.*)$'
+        fastcgi_param:
+            'SCRIPT_FILENAME': '$document_root/index.php'
+        include:
+          - 'fastcgi_params'
+      'pinboard-https-htaccess':
+        location: '~ /\.(ht|svn|git)'
         server: 'zabbix-https'
         location_deny:
           - 'all'

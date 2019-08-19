@@ -93,16 +93,22 @@ nginx::nginx_servers:
       - '@site'
     access_log: '/var/log/nginx/pinboard.local.access.log'
     error_log: '/var/log/nginx/pinboard.local.error.log'
-    location_cfg_append:
-      access_log: off
-      satisfy: any
-      include:
-        - '/etc/nginx/conf.d/allow_from_ips.conf'
-      deny: all
-      auth_basic: 'Restricted'
-      auth_basic_user_file: '/var/data/passwds/zabbix.local'
     use_default_location: false
     locations:
+      '/':
+        location: '/'
+        location_cfg_append:
+          access_log: off
+          satisfy: any
+          include:
+            - '/etc/nginx/conf.d/allow_from_ips.conf'
+          deny: all
+          auth_basic: 'Restricted'
+          auth_basic_user_file: '/var/data/passwds/zabbix.local'
+        try_files:
+          - '$uri'
+          - '$uri/'
+          - '@site'
       '~ \.php$':
         location: '~ \.php$'
         location_cfg_append:

@@ -162,7 +162,8 @@ php::extensions:
   xml: {}
   xmlrpc: {}
   zip: {}
-  # imagick: {}
+  imagick:
+    provider: 'apt'
   memcached:
     provider: 'apt'
     package_prefix: 'php-'

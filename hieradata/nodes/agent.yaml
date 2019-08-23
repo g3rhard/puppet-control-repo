@@ -144,6 +144,9 @@ php::settings:
   'PHP/post_max_size': '32M'
   'PHP/upload_max_filesize': '32M'
   'Date/date.timezone': 'UTC'
+  'xdebug.remote_enable': 1
+  'xdebug.remote_host': '127.0.0.1'
+  'xdebug.remote_port': 9000
 php::extensions:
   bcmath: {}
   curl: {}

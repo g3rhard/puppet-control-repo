@@ -158,7 +158,9 @@ php::extensions:
     provider: 'apt'
     package_prefix: 'php-'
   readline: {}
-  # xdebug: {}
+  xdebug:
+    provider: 'apt'
+    package_prefix: 'php-'
   xml: {}
   xmlrpc: {}
   zip: {}

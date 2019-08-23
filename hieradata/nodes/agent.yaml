@@ -164,6 +164,7 @@ php::extensions:
   zip: {}
   imagick:
     provider: 'apt'
+    package_prefix: 'php-'
   memcached:
     provider: 'apt'
     package_prefix: 'php-'

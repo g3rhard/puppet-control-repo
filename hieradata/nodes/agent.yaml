@@ -1,6 +1,6 @@
 ---
 classes:
-  - nginx
+  # - nginx
   - php
   # - test_nginx
 

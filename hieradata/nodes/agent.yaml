@@ -1,6 +1,6 @@
 ---
 classes:
-  - nginx
+  # - nginx
   - php
   # - test_nginx
 
@@ -12,57 +12,121 @@ nginx::config::confd_purge: true
 # vdomain: example.com
 
 nginx::nginx_servers:
-    'zabbix-http':
-        server_name:
-            - 'zabbix.local'
-        www_root: '/var/www/zabbix.local'
-        index_files:
-            - 'index.php'
-        try_files:
-            - '$uri'
-            - '$uri/'
-            - '/index.php?$args'
-        access_log: '/var/log/nginx/devops-alldomains-access.log'
-        error_log: '/var/log/nginx/devops-alldomains-error.log'
-    'zabbix-https':
-        server_name:
-            - 'zabbix.local'
-        listen_port: 443
-        ssl_port: 443
-        www_root: '/var/www/zabbix.local'
-        ssl: true
-        ssl_key: '/etc/ssl/www/zabbix.local.key'
-        ssl_cert: '/etc/ssl/www/zabbix.local.crt'
-        index_files:
-            - 'index.php'
-        try_files:
-            - '$uri'
-            - '$uri/'
-            - '/index.php?$args'
-        access_log: '/var/log/nginx/devops-alldomains-access-ssl.log'
-        error_log: '/var/log/nginx/devops-alldomains-error-ssl.log'
-
-nginx::nginx_locations:
-    'zabbix-http-loc':
+  'zabbix-http':
+    server_name:
+      - 'zabbix.local'
+    listen_port: 80
+    ssl_redirect: true
+  'zabbix-https':
+    server_name:
+      - 'zabbix.local'
+    listen_port: 443
+    ssl_port: 443
+    www_root: '/usr/share/zabbix'
+    ssl: true
+    ssl_key: '/etc/ssl/www/zabbix.local.key'
+    ssl_cert: '/etc/ssl/www/zabbix.local.crt'
+    index_files:
+      - 'index.php'
+      - 'index.html'
+      - 'index.htm'
+    try_files:
+      - '$uri'
+      - '$uri/'
+      - '/index.php?$args'
+    access_log: '/var/log/nginx/zabbix.local.access.log'
+    error_log: '/var/log/nginx/zabbix.local.error.log'
+    location_cfg_append:
+      access_log: off
+      satisfy: any
+      include:
+        - '/etc/nginx/conf.d/allow_from_ips.conf'
+      deny: all
+      auth_basic: 'Restricted'
+      auth_basic_user_file: '/var/data/passwds/zabbix.local'
+    locations:
+      'zabbix-https-loc':
         location: '~ \.php$'
-        www_root: '/var/www/$fqdn'
-        server: 'zabbix-http'
-        fastcgi: '127.0.0.1:9000'
-        fastcgi_split_path: '^(.+\.php)(/.*)$'
-        fastcgi_index: 'index.php'
-        fastcgi_param:
-            'SCRIPT_FILENAME': '$document_root$fastcgi_script_name'
-    'zabbix-https-loc':
-        location: '~ \.php$'
-        www_root: '/var/www/$fqdn'
+        www_root: '/usr/share/zabbix'
         server: 'zabbix-https'
         ssl: true
         ssl_only: true
         fastcgi: '127.0.0.1:9000'
-        fastcgi_split_path: '^(.+\.php)(/.*)$'
+        # fastcgi_split_path: '^(.+\.php)(/.*)$'
         fastcgi_index: 'index.php'
+        location_cfg_append:
+          fastcgi_buffers: '4 256k'
+          fastcgi_busy_buffers_size: '256k'
+          fastcgi_temp_file_write_size: '256k'
+        try_files:
+          - '$uri =404'
         fastcgi_param:
             'SCRIPT_FILENAME': '$document_root$fastcgi_script_name'
+        include:
+          - 'fastcgi_params'
+      'zabbix-https-htaccess':
+        location: '~ /\.ht'
+        server: 'zabbix-https'
+        location_deny:
+          - 'all'
+  'pinboard-http':
+    server_name:
+      - 'pinboard.local'
+    listen_port: 80
+    ssl_redirect: true
+  'pinboard-https':
+    server_name:
+      - 'pinboard.local'
+    listen_port: 443
+    ssl_port: 443
+    www_root: '/var/www/pinboard/web'
+    ssl: true
+    ssl_key: '/etc/ssl/www/pinboard.local.key'
+    ssl_cert: '/etc/ssl/www/pinboard.local.crt'
+    index_files:
+      - 'index.php'
+      - 'index.html'
+      - 'index.htm'
+    try_files:
+      - '$uri'
+      - '$uri/'
+      - '@site'
+    access_log: '/var/log/nginx/pinboard.local.access.log'
+    error_log: '/var/log/nginx/pinboard.local.error.log'
+    use_default_location: false
+    locations:
+      '/':
+        location: '/'
+        location_cfg_append:
+          access_log: off
+          satisfy: any
+          include:
+            - '/etc/nginx/conf.d/allow_from_ips.conf'
+          deny: all
+          auth_basic: 'Restricted'
+          auth_basic_user_file: '/var/data/passwds/zabbix.local'
+        try_files:
+          - '$uri'
+          - '$uri/'
+          - '@site'
+      '~ \.php$':
+        location: '~ \.php$'
+        location_cfg_append:
+          return: 404
+      'pinboard-site':
+        location: '@site'
+        ssl: true
+        ssl_only: true
+        fastcgi: '127.0.0.1:9000'
+        # fastcgi_split_path: '^(.+\.php)(/.*)$'
+        fastcgi_param:
+            'SCRIPT_FILENAME': '$document_root/index.php'
+        include:
+          - 'fastcgi_params'
+      'pinboard-https-htaccess':
+        location: '~ /\.(ht|svn|git)'
+        location_deny:
+          - 'all'
 
 php::ensure: present
 php::manage_repos: false
@@ -80,6 +144,9 @@ php::settings:
   'PHP/post_max_size': '32M'
   'PHP/upload_max_filesize': '32M'
   'Date/date.timezone': 'UTC'
+  'Xdebug/xdebug.remote_enable': 1
+  'Xdebug/xdebug.remote_host': '127.0.0.1'
+  'Xdebug/xdebug.remote_port': 9000
 php::extensions:
   bcmath: {}
   curl: {}
@@ -94,11 +161,15 @@ php::extensions:
     provider: 'apt'
     package_prefix: 'php-'
   readline: {}
-  # xdebug: {}
+  xdebug:
+    provider: 'apt'
+    package_prefix: 'php-'
   xml: {}
   xmlrpc: {}
   zip: {}
-  # imagick: {}
+  imagick:
+    provider: 'apt'
+    package_prefix: 'php-'
   memcached:
     provider: 'apt'
     package_prefix: 'php-'
